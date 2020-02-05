@@ -4,6 +4,13 @@ const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const inquirer = require("inquirer");
+const fs = require("fs");
+
+const document1 = fs.readFile('./lib/Main.html', 'utf8', function (err) {
+    if (err) {
+        return err
+    }
+})
 ///////////////////////////////////////////  JAVASCRIPT REQS  ///////////////////////////////////////////
 ///////////////////////////////////////////  HTML REQS        ///////////////////////////////////////////
 
@@ -95,7 +102,24 @@ const engineerQuestions = [
         message: "Whats your github profile name?"
     }
 ];
-
+const startOvaQuestions = [
+    {
+        type: "list",
+        name: "create",
+        message: "Would you like to create another employee card?",
+        choices: [
+            {
+                value: 'Yes'
+            },
+            {
+                value: 'No'
+            }
+        ]
+    }
+];
+function askAgain() {
+    return inquirer.prompt(startOvaQuestions)
+}
 //////////////// ALL THE QUESTIONS ////////////////
 function createCard(answers) {
     return `
@@ -113,60 +137,89 @@ function createCard(answers) {
 `
 
 }
+function askQuestions(data){
+    if (data.Position === 'Manager') {
+        inquirer.prompt(managerQuestions)
+            .then(function (answers) {
+                const name = answers.name;
+                const id = answers.id;
+                const email = answers.email;
+                const position = data.Position;
+                const officeNum = answers.officeNum;
+                const cardMana = [name, id, email, officeNum, position];
+                console.log(cardMana);
+
+                const Manager1 = new Manager(name, id, email, officeNum);
+                console.log(Manager1);
+                console.log(Manager1.makeCard());
+                askAgain().then(function (res) {
+                    if (res.create === "Yes") {
+                        promptUser(genPosition)
+                            .then(function (res) {
+                                askQuestions(res)
+                            })
+                    } else {
+                        console.log('Not the droids your looking for?');
+                    }
+                })
+            })
+
+    } else if (data.Position === 'Intern') {
+        inquirer.prompt(internQuestions)
+            .then(function (answers) {
+                const name = answers.name;
+                const id = answers.id;
+                const email = answers.email;
+                const school = answers.school;
+                const position = data.Position;
+                const cardInt = [name, id, email, school, position];
+                console.log(cardInt);
+                const Intern1 = new Intern(name, id, email, school);
+                console.log(Intern1.makeCard())
+                askAgain().then(function (res) {
+                    if (res.create === "Yes") {
+                        promptUser(genPosition)
+                            .then(function (res) {
+                                askQuestions(res)
+                            })
+                    } else {
+                        console.log('Not the droids your looking for?');
+                    }
+                })
+            })
+
+    } else if (data.Position === 'Engineer') {
+        inquirer.prompt(engineerQuestions)
+            .then(function (answers) {
+                const name = answers.name;
+                const id = answers.id;
+                const email = answers.email;
+                const position = data.Position;
+                const github = answers.github;
+                const cardEng = [name, id, email, github, position];
+                console.log(cardEng);
+                const Engineer1 = new Engineer(name, id, email, github);
+                console.log(Engineer1.makeCard());
+                // const thiiisCard = (Engineer1.makeCard())
+                askAgain().then(function (res) {
+                    if (res.create === "Yes") {
+                        promptUser(genPosition)
+                            .then(function (res) {
+                                askQuestions(res)
+                            })
+                    } else {
+                        console.log('Not the droids your looking for?');
+                    }
+                })
+            })
+    } else {
+        console.log(Error)
+    }
+}
 function promptUser() {
     return inquirer.prompt(genPosition);
 }
 promptUser()
     .then(function (data) {
-
-
-        if (data.Position === 'Manager') {
-            inquirer.prompt(managerQuestions)
-                .then(function (answers) {
-                    const name = answers.name;
-                    const id = answers.id;
-                    const email = answers.email;
-                    const position = data.Position;
-                    const officeNum = answers.officeNum;
-                    const cardMana = [name, id, email, officeNum, position];
-                    console.log(cardMana);
-
-                    const Manager1 = new Manager(name, id, email, officeNum);
-                    console.log(Manager1);
-                    console.log(Manager1.makeCard())
-                })
-
-        } else if (data.Position === 'Intern') {
-            inquirer.prompt(internQuestions)
-                .then(function (answers) {
-                    const name = answers.name;
-                    const id = answers.id;
-                    const email = answers.email;
-                    const school = answers.school;
-                    const position = data.Position;
-                    const cardInt = [name, id, email, school, position];
-                    console.log(cardInt);
-                    const Intern1 = new Intern(name, id, email, school);
-                    console.log(Intern1.makeCard())
-                })
-
-        } else if (data.Position === 'Engineer') {
-            inquirer.prompt(engineerQuestions)
-                .then(function (answers) {
-                    const name = answers.name;
-                    const id = answers.id;
-                    const email = answers.email;
-                    const position = data.Position;
-                    const github = answers.github;
-                    const cardEng = [name, id, email, github, position];
-                    console.log(cardEng);
-                    const Engineer1 = new Engineer(name, id, email, github);
-                    const thiiisCard = (Engineer1.makeCard())
-                    // $(".appendHere").append(thiiisCard);
-                })
-        } else {
-            console.log(Error)
-        }
-
-
+        askQuestions(data);
     })
