@@ -5,12 +5,8 @@ const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const inquirer = require("inquirer");
 const fs = require("fs");
+const GenHTML = require("./lib/GenHTML")
 
-const document1 = fs.readFile('./lib/Main.html', 'utf8', function (err) {
-    if (err) {
-        return err
-    }
-})
 ///////////////////////////////////////////  JAVASCRIPT REQS  ///////////////////////////////////////////
 ///////////////////////////////////////////  HTML REQS        ///////////////////////////////////////////
 
@@ -121,37 +117,43 @@ function askAgain() {
     return inquirer.prompt(startOvaQuestions)
 }
 //////////////// ALL THE QUESTIONS ////////////////
-function createCard(answers) {
-    return `
-    <div class="card">
-        <div class="card-header" style="padding: 15px;">
-            <p class="name">${answers.name}</p>
-            <p><i class=""></i>${answers.role}</p>
-        </div>
-        <div class="card-body">
-            <p class="list-item">ID: ${answers.id}</p>
-            <p class="list-item">Email:<a href="#"> ${answers.email}</a></p>
-            <p class="list-item">School: ${answers.school}</p>
-        </div>
-    </div>
-`
+const company = [];
 
+function generate(res) {
+    fs.writeFile('CompanyScrubs.html', GenHTML(res), (err) => {
+        if (err) throw err;
+    })
+    console.log('Success! check for your new HTML page!')
 }
-function askQuestions(data){
+
+function askQuestions(data) {
+    //////////////////// MANAGER //////////////////// 
     if (data.Position === 'Manager') {
         inquirer.prompt(managerQuestions)
             .then(function (answers) {
                 const name = answers.name;
+                
+                var name1 = name;
+                console.log(name1);
+                var str = name1.toLowerCase().split(" ");
+                for (var i = 0, x = str.length; i < x; i++) {
+                    str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+                }
+                var newName = str.join(" ");
+                console.log(newName);
+
+
                 const id = answers.id;
                 const email = answers.email;
                 const position = data.Position;
                 const officeNum = answers.officeNum;
-                const cardMana = [name, id, email, officeNum, position];
+                const cardMana = [newName, id, email, officeNum, position];
                 console.log(cardMana);
 
-                const Manager1 = new Manager(name, id, email, officeNum);
-                console.log(Manager1);
-                console.log(Manager1.makeCard());
+
+                const Manager1 = new Manager(newName, id, email, officeNum);
+                let ManagerCard = Manager1.makeCard();
+                company.push(ManagerCard);
                 askAgain().then(function (res) {
                     if (res.create === "Yes") {
                         promptUser(genPosition)
@@ -160,22 +162,35 @@ function askQuestions(data){
                             })
                     } else {
                         console.log('Not the droids your looking for?');
+                        generate(company);
                     }
                 })
             })
-
+     //////////////////// MANAGER //////////////////// 
+     //////////////////// INTERN //////////////////// 
     } else if (data.Position === 'Intern') {
         inquirer.prompt(internQuestions)
             .then(function (answers) {
                 const name = answers.name;
+                var name1 = name;
+
+                console.log(name1);
+                var str = name1.toLowerCase().split(" ");
+                for (var i = 0, x = str.length; i < x; i++) {
+                    str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+                }
+                var newName = str.join(" ");
+                console.log(newName);
+
                 const id = answers.id;
                 const email = answers.email;
                 const school = answers.school;
                 const position = data.Position;
-                const cardInt = [name, id, email, school, position];
+                const cardInt = [newName, id, email, school, position];
                 console.log(cardInt);
-                const Intern1 = new Intern(name, id, email, school);
-                console.log(Intern1.makeCard())
+                const Intern1 = new Intern(newName, id, email, school);
+                let InternCard = Intern1.makeCard();
+                company.push(InternCard);
                 askAgain().then(function (res) {
                     if (res.create === "Yes") {
                         promptUser(genPosition)
@@ -184,22 +199,36 @@ function askQuestions(data){
                             })
                     } else {
                         console.log('Not the droids your looking for?');
+                        generate(company);
                     }
                 })
             })
-
+    //////////////////// INTERN ////////////////////
+    //////////////////// ENGINEER ////////////////////
     } else if (data.Position === 'Engineer') {
         inquirer.prompt(engineerQuestions)
             .then(function (answers) {
                 const name = answers.name;
+
+                var name1 = name;
+                console.log(name1);
+                var str = name1.toLowerCase().split(" ");
+                for (var i = 0, x = str.length; i < x; i++) {
+                    str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+                }
+                var newName = str.join(" ");
+                console.log(newName);
+
                 const id = answers.id;
                 const email = answers.email;
                 const position = data.Position;
                 const github = answers.github;
-                const cardEng = [name, id, email, github, position];
+                const cardEng = [newName, id, email, github, position];
+
                 console.log(cardEng);
-                const Engineer1 = new Engineer(name, id, email, github);
-                console.log(Engineer1.makeCard());
+                const Engineer1 = new Engineer(newName, id, email, github);
+                let EngineerCard = Engineer1.makeCard();
+                company.push(EngineerCard);
                 // const thiiisCard = (Engineer1.makeCard())
                 askAgain().then(function (res) {
                     if (res.create === "Yes") {
@@ -209,6 +238,7 @@ function askQuestions(data){
                             })
                     } else {
                         console.log('Not the droids your looking for?');
+                        generate(company);
                     }
                 })
             })
@@ -216,6 +246,7 @@ function askQuestions(data){
         console.log(Error)
     }
 }
+//////////////////// ENGINEER ////////////////////
 function promptUser() {
     return inquirer.prompt(genPosition);
 }
