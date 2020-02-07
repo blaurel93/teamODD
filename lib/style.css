@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:400,700&display=swap');
 .list-item {
     padding: 3px 5px;
     border: 1px solid rgb(219, 219, 219);
@@ -43,8 +44,33 @@ body {
       -moz-animation: Gradient 15s ease infinite;
       animation: Gradient 15s ease infinite;
 }
+.engineer {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+      color: white;
+      background: linear-gradient(-45deg, rgb(87, 1, 1), rgb(151, 35, 0), rgb(187, 112, 0), #6e5a00);
+      background-size: 400% 400%;
+      -webkit-animation: Gradient 15s ease infinite;
+      -moz-animation: Gradient 15s ease infinite;
+      animation: Gradient 15s ease infinite;
+}
+.manager {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+      color: white;
+      background: linear-gradient(-45deg, rgb(161, 151, 1), rgb(138, 153, 0), rgb(101, 155, 0), #1a9b00);
+      background-size: 400% 400%;
+      -webkit-animation: Gradient 15s ease infinite;
+      -moz-animation: Gradient 15s ease infinite;
+      animation: Gradient 15s ease infinite;
+}
 .display-4 {
     text-align: center;
+    font-family: 'Josefin Sans', sans-serif;
+}
+.fontName {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 600;
 }
 .jumbotron {
     -webkit-font-smoothing: antialiased;
